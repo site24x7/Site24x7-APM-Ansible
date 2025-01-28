@@ -1,0 +1,8 @@
+---
+- name: web_server_restart
+  when: install_props.restart_web_server|default(false)|bool
+  service:
+    name: "{{ install_props.service_name }}"
+    state: restarted
+  become: yes
+  

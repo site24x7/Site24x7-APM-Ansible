@@ -1,0 +1,19 @@
+---
+# tasks file for Site24x7-Roles
+
+- name: Print message
+  ansible.builtin.debug:
+       msg: 'Hello Site24x7 user, path vairable {{ ansible_env.PATH }} OS: {{ansible_facts.os_family}}'
+
+- name: Check if OS is supported
+  ansible.builtin.include_tasks: os-check.yml
+  
+- name: Variable validation
+  ansible.builtin.include_tasks: variables-check.yml
+  
+- name: installing apm insight java agent
+  ansible.builtin.include_tasks: install-agent.yml
+
+- name: enable apm insight agent task
+  ansible.builtin.include_tasks: enable-agent.yml
+  when: install_props.enable_agent|default(true)|bool

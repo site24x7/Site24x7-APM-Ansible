@@ -1,0 +1,59 @@
+- name: "For Tomcat : Add if a String apminsight-javaagent.jar is not present in the file"
+  lineinfile:
+    path: "{{install_props.jvm_config_file}}"
+    regexp: "/apminsight-javaagent.jar"
+    line: 'JAVA_OPTS="$JAVA_OPTS -javaagent:{{install_props.agent_download_dir}}/apminsight-javaagent.jar"'
+    backup: yes
+    create: yes
+  when: install_props.server_type == 'tomcat'
+  notify:
+    - web_server_restart
+  changed_when: true #for forcing the handler to run irrespective of changes
+  
+
+- name: "For Oracle Weblogic : Add if a String apminsight-javaagent.jar is not present in the file"
+  lineinfile:
+    path: "{{install_props.jvm_config_file}}"
+    regexp: "/apminsight-javaagent.jar"
+    line: "set JAVA_OPTIONS=-DUseSunHttpHandler=true -javaagent:{{install_props.agent_download_dir}}/apminsight-javaagent.jar %JAVA_OPTIONS%"
+    insertbefore: BOF
+    backup: yes
+    create: yes
+  when: install_props.server_type == 'weblogic'
+  notify:
+    - web_server_restart
+  changed_when: true #for forcing the handler to run irrespective of changes
+  
+- name: "For JBoss4 or JBoss5 or JBoss6 : Add if a String apminsight-javaagent.jar is not present in the file"
+  lineinfile:
+    path: "{{install_props.jvm_config_file}}"
+    regexp: "/apminsight-javaagent.jar"
+    line: 'export JAVA_OPTS="$JAVA_OPTS -javaagent:{{install_props.agent_download_dir}}/apminsight-javaagent.jar"'
+    backup: yes
+  when: install_props.server_type == 'jboss' and (install_props.server_version in '_4_5_6_')
+  notify:
+    - web_server_restart
+  changed_when: true #for forcing the handler to run irrespective of changes
+
+
+- name: "For JBoss 7 or JBoss EAP : Add if a String apminsight-javaagent.jar is not present in the file"
+  lineinfile:
+    path: "{{install_props.jvm_config_file}}"
+    regexp: "/apminsight-javaagent.jar"
+    line: 'export JAVA_OPTS="$JAVA_OPTS -Djboss.modules.system.pkgs=org.jboss.byteman,com.manageengine -javaagent:{{install_props.agent_download_dir}}/apminsight-javaagent.jar'
+    backup: yes
+  when: (install_props.server_type in 'jboss_wildfly') and (install_props.server_version in '_jboss_7_EAP_wildfly')
+  notify:
+    - web_server_restart
+  changed_when: true #for forcing the handler to run irrespective of changes
+
+#- name: "For Wildfly : Add if a String apminsight-javaagent.jar is not present in the file"
+#  lineinfile:
+#    path: "{{install_props.jvm_config_file}}"
+#    regexp: "/apminsight-javaagent.jar"
+#    line: '-Djboss.modules.system.pkgs=org.jboss.byteman,com.manageengine -javaagent:{{install_props.agent_download_dir}}/apminsight-javaagent.jar'
+#    backup: yes
+#  when: (install_props.server_type == 'wildfly')
+#  notify:
+#    - web_server_restart
+#  changed_when: true #for forcing the handler to run irrespective of changes

@@ -1,0 +1,38 @@
+- stat: 
+    path: "{{server_dir}}/bin/setenv.sh"
+  register: p
+
+- name: "Creating an empty file setenv.sh"
+  file:
+    path: "{{server_dir}}/bin/setenv.sh"
+    state: touch
+    mode: 0555
+  when: not p.stat.exists
+  
+- name: "Creating a file with content"
+  copy:
+    dest: "{{server_dir}}/bin/setenv.sh"
+    content: |
+        JAVA_OPTS="$JAVA_OPTS -javaagent:{{agent_download_dir}}/apminsight-javaagent.jar"
+  when: not p.stat.exists
+
+- name: "Validate if a String apminsight-javaagent.jar is present in the file"
+  lineinfile:
+    path: "{{server_dir}}/bin/setenv.sh"
+    line: "apminsight-javaagent.jar"
+    state: present
+    backup: yes
+  check_mode: yes
+  register: isJarPresent
+  
+#- name: Print message2
+#  ansible.builtin.debug:
+#   msg: 'Hello world {{ isJarPresent }} {{ isJarPresent.changed }}'
+ 
+- name: "Add if a String apminsight-javaagent.jar is not present in the file"
+  lineinfile:
+    path: "{{server_dir}}/bin/setenv.sh"
+    regexp: "apminsight-javaagent"
+    line: 'JAVA_OPTS="$JAVA_OPTS -javaagent:{{agent_download_dir}}/apminsight-javaagent.jar"'
+    backup: yes
+  when: not isJarPresent.changed=="True"

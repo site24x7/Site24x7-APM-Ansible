@@ -1,0 +1,9 @@
+galaxy_info:
+  author: Zoho Coroporation Pvt. ltd.
+  description: 
+  company: Zoho Corporation Pvt. ltd.
+  license: Copyright (c) 2025, ZOHO CORPORATION https://www.site24x7.com/terms.html
+  min_ansible_version: 2.1
+  galaxy_tags: []
+dependencies: []
+  

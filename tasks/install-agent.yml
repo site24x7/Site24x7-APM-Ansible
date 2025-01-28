@@ -1,0 +1,35 @@
+- name: Hello message
+  ansible.builtin.debug:
+    msg: Hello Site24x7 Apm insight User
+    
+- name: Showing Site24x7 APM insight agent URL
+  debug:
+         msg: ' {{install_props.agent_url}}'
+  
+- name: "Recursively remove 'Site24x7 APMinsight' directory"
+  ansible.builtin.file:
+    path: "{{install_props.agent_download_dir}}"
+    state: absent
+    
+- name: "Creating a directory 's247 apminsight' if it does not exist"
+  ansible.builtin.file:
+    path: "{{install_props.agent_download_dir}}"
+    state: directory
+    
+- name: "Unarchive a file that needs to be downloaded"
+  ansible.builtin.unarchive:
+    src: "{{install_props.agent_url}}"
+    dest: "{{install_props.agent_download_dir}}"
+    remote_src: yes
+    
+- name: "Replacing the License key in APM Insight conf file"
+  lineinfile:
+    path: "{{install_props.agent_download_dir}}/apminsight.conf"
+    regexp: 'license.key='
+    line: 'license.key={{apminsight_props.license_key}}'
+
+- name: "Replacing the Application Name key in APM Insight conf file"
+  lineinfile:
+    path: "{{install_props.agent_download_dir}}/apminsight.conf"
+    regexp: 'application.name='
+    line: 'application.name={{apminsight_props.app_name}}'

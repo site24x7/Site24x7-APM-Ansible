@@ -1,0 +1,45 @@
+- name: Check if '/opt/apminsight-ansible.yml' file exists
+  stat:
+    path: /opt/apminsight-ansible.yml
+  register: props_file_exists
+  
+  
+- name: Read the existing configuration file (/opt/apminsight-ansible.yml)
+  include_vars:
+    file: /opt/apminsight-ansible.yml
+    name: apminsight_ansible_props
+  when: props_file_exists.stat.exists
+    
+    
+- name: Read the existing configuration file (/opt/apminsight-ansible.yml)
+  include_vars:
+    file: /opt/apminsight-ansible.yml
+    name: apminsight_ansible_props
+  when: props_file_exists.stat.exists
+  
+  
+- name: Setting properties
+  set_fact:
+    install_props: "{{ apminsight_ansible_props.install_props }}"
+  when: props_file_exists.stat.exists and (apminsight_ansible_props is defined)
+
+  
+- name: Check if jvm config file exists in the location path
+  stat:
+    path: "{{ install_props.jvm_config_file }}"
+  register: config_file_exists
+  when: props_file_exists.stat.exists and (apminsight_ansible_props is defined)
+
+  
+- name: Delete line from config file
+  lineinfile:
+    path: "{{ install_props.jvm_config_file }}"
+    state: absent
+    regexp: '.*apminsight-javaagent\.jar.*$'
+  when:
+    - props_file_exists.stat.exists
+    - apminsight_ansible_props is defined
+    - config_file_exists.stat.exists
+  notify:
+    - web_server_restart
+  changed_when: true #for forcing the handler to run irrespective of changes

@@ -1,0 +1,27 @@
+- name: checking basic configuration
+  block:
+    - name: Include uninstall tasks
+      ansible.builtin.include_tasks: uninstall.yml
+    - name: End play if uninstall is true
+      meta: end_play
+  when: uninstall is defined and (uninstall == true or uninstall == 'true')
+
+- name: concatenate the group names and setting application name
+  vars:
+    application_name: "{{group_names | join('_') }}"
+  set_fact:
+    apminsight_props: "{{ apminsight_props | combine({'app_name': application_name}) }}"
+  when: 'apminsight_props.app_name is undefined'
+
+- name: concatenate the default properties with user defined properties
+  set_fact:
+    install_props: "{{ install_default_props | combine(install_props, recursive=True)}}"
+
+- name: Display APM Insight Properties
+  debug:
+         msg: '{{apminsight_props}} \n {{group_names}} \n {{install_props}}'
+
+- name: Writing variables to /opt/apminsight-ansible.yml
+  copy:
+    content: "{{ {'app_name': apminsight_props.app_name, 'install_props': install_props} | to_nice_yaml }}"
+    dest: /opt/apminsight-ansible.yml
