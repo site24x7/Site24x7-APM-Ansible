@@ -22,6 +22,7 @@ Deploy and configure the Site24x7 APM Insight Java agent on your application ser
 
 * The `unzip` command must be available on target hosts.
 * Works only for operating systems `RedHat`, `Rocky`, `AlmaLinux`, `Debian` and `Darwin`.
+* Ansible should be installed on the control node. [Ansible Installation Guide](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 
 ## Configuration
 --------
