@@ -1,7 +1,7 @@
 - name: checking basic configuration
   block:
     - name: Include uninstall tasks
-      ansible.builtin.include_tasks: uninstall.yml
+      include_tasks: uninstall.yml
     - name: End play if uninstall is true
       meta: end_play
   when: uninstall is defined and (uninstall == true or uninstall == 'true')
