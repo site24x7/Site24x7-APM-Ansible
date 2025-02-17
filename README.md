@@ -21,7 +21,7 @@ Deploy and configure the Site24x7 APM Insight Java agent on your application ser
 --------
 
 * The `unzip` command must be available on target hosts.
-* Works only for operating systems `RedHat`, `Rocky`, `AlmaLinux`, `Debian` and `Darwin`.
+* Works only for operating systems `RedHat`, `Rocky`, `AlmaLinux`, `Debian`, `Suse` and `Darwin`.
 * Ansible should be installed on the control node. [Ansible Installation Guide](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 
 ## Configuration
@@ -41,7 +41,7 @@ Deploy and configure the Site24x7 APM Insight Java agent on your application ser
 | `server_type` | Web server type (e.g., tomcat, jetty, wildfly) | **Yes** | - |
 | `server_version` | Web server version | No | - |
 | `jvm_config_file` | Path to the web server's JVM config file. For eg. `setenv.sh` file in Tomcat server | **Yes** | - |
-| `service_name` | Service name for management | No | - |
+| `service_name` | Service name of App Server to restart after agent installation | No | - |
 | `restart_web_server` | Restart the web server after installation | No | `true` |
 | `agent_download_dir` | Directory for agent files (optional) | No | `/opt/apm` |
 | `enable_agent` | Enable/disable the APM Insight agent | No | `true` |
@@ -53,6 +53,7 @@ Deploy and configure the Site24x7 APM Insight Java agent on your application ser
 ```yml
 - hosts: prod_webserver
   vars:
+    ansible_sudo_pass: <Your sudo password>
     apminsight_props:
       app_name: <Your Application Name>
       license_key: <Your License Key>
@@ -62,9 +63,13 @@ Deploy and configure the Site24x7 APM Insight Java agent on your application ser
       service_name: 'tomcat'
       server_version: '8'
       restart_web_server: 'true'
+  roles:
+   - role: Site24x7-APM
+  become: yes
   tasks:
-   - include_role:
-       name: Site24x7-APM
+  - name: Make sure service has started
+    debug:
+         msg: "Make sure service has started"
 ```    
 
 ### `host_inventory.yml`
@@ -74,7 +79,6 @@ Deploy and configure the Site24x7 APM Insight Java agent on your application ser
   vars:
     # Here, you can apply the configuration to all hosts
     ansible_user: fedora
-    server_type: tomcat
   hosts:
     java_server_one:
       ansible_host: 10.0.20.5

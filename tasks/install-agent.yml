@@ -15,6 +15,7 @@
   ansible.builtin.file:
     path: "{{install_props.agent_download_dir}}"
     state: directory
+    mode: 0777
     
 - name: "Unarchive a file that needs to be downloaded"
   ansible.builtin.unarchive:
