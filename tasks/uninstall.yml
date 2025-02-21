@@ -31,7 +31,7 @@
   stat:
     path: "{{ install_props.jvm_config_file }}"
   register: config_file_exists
-  when: props_file_exists.stat.exists and (install_props is defined) and false
+  when: props_file_exists.stat.exists and (install_props is defined)
 
   
 - name: Delete line from config file
