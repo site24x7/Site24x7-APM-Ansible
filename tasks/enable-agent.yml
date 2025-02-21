@@ -15,7 +15,7 @@
   lineinfile:
     path: "{{install_props.jvm_config_file}}"
     regexp: "/apminsight-javaagent.jar"
-    line: "set JAVA_OPTIONS=-DUseSunHttpHandler=true -javaagent:{{install_props.agent_download_dir}}/apminsight-javaagent.jar %JAVA_OPTIONS%"
+    line: 'set JAVA_OPTIONS="-DUseSunHttpHandler=true -javaagent:{{install_props.agent_download_dir}}/apminsight-javaagent.jar %JAVA_OPTIONS%"'
     insertbefore: BOF
     backup: yes
     create: yes
@@ -40,7 +40,7 @@
   lineinfile:
     path: "{{install_props.jvm_config_file}}"
     regexp: "/apminsight-javaagent.jar"
-    line: 'export JAVA_OPTS="$JAVA_OPTS -Djboss.modules.system.pkgs=org.jboss.byteman,com.manageengine -javaagent:{{install_props.agent_download_dir}}/apminsight-javaagent.jar'
+    line: 'export JAVA_OPTS="$JAVA_OPTS -Djboss.modules.system.pkgs=org.jboss.byteman,com.manageengine -javaagent:{{install_props.agent_download_dir}}/apminsight-javaagent.jar"'
     backup: yes
     create: yes
   when: (install_props.server_type in '_jboss_') and (install_props.server_version in '_jboss_7_')
@@ -52,7 +52,7 @@
   lineinfile:
     path: "{{install_props.jvm_config_file}}"
     regexp: "/apminsight-javaagent.jar"
-    line: 'export JAVA_OPTS="$JAVA_OPTS -Djboss.modules.system.pkgs=org.jboss.byteman,com.manageengine -javaagent:{{install_props.agent_download_dir}}/apminsight-javaagent.jar'
+    line: 'export JAVA_OPTS="$JAVA_OPTS -Djboss.modules.system.pkgs=org.jboss.byteman,com.manageengine -javaagent:{{install_props.agent_download_dir}}/apminsight-javaagent.jar"'
     backup: yes
   when: (install_props.server_type == 'wildfly')
   notify:

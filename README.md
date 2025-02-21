@@ -49,11 +49,10 @@ Deploy and configure the Site24x7 APM Insight Java agent on your application ser
 ## Example Playbook and Inventory File
 ---------
 
-### `apm_insight_playbook.yml`
+### `my-playbook.yml`
 ```yml
 - hosts: prod_webserver
   vars:
-    ansible_sudo_pass: <Your sudo password>
     apminsight_props:
       app_name: <Your Application Name>
       license_key: <Your License Key>
@@ -72,13 +71,15 @@ Deploy and configure the Site24x7 APM Insight Java agent on your application ser
          msg: "Make sure service has started"
 ```    
 
-### `host_inventory.yml`
+### `host-inventory.yml`
 
 ```yml
  prod_webserver: # host group
   vars:
     # Here, you can apply the configuration to all hosts
     ansible_user: fedora
+    ansible_password: <Your host password>
+    ansible_sudo_pass: <Your sudo password>
   hosts:
     java_server_one:
       ansible_host: 10.0.20.5
@@ -134,13 +135,20 @@ To uninstall the Site24x7 APM Insight Java agent using Ansible, you can use the 
 
 Here is an example Ansible playbook that uninstalls the Site24x7 APM Insight Java agent:
 
+### `uninstall-playbook.yml`
 ```yml
 - hosts: webservers
   vars:
     uninstall: true
+    ansible_sudo_pass: <Your sudo password>
   tasks:
    - include_role:
        name: Site24x7-APM
+```
+
+Run the playbook with the below command to uninstall
+ ```
+ ansible-playbook -i ./my-inventory.yml ./uninstall-playbook.yml
 ```
 
 This will initiate the uninstallation process for the Site24x7 APM Insight Java agent.
