@@ -15,7 +15,7 @@
 ## Overview
 --------
 
-Deploy and configure the Site24x7 APM Insight Java agent on your application servers with ease using this Ansible role. Supports popular application servers and frameworks like Apache Tomcat, Eclipse Jetty and WildFly.
+Deploy and configure the Site24x7 APM Insight Java agent on your application servers with ease using this Ansible role. Supports popular application servers and frameworks like Apache Tomcat, JBoss, Oracle WebLogic and WildFly.
 
 ## Requirements
 --------
